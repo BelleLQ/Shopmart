@@ -35,10 +35,17 @@ exports.readAllCustomers=(req,res)=>{
 exports.readACustomer=(req,res)=>{
     customerModel.findById(req.params.custId)
     .then(customer=>{
-        res.json({
-            message: `The customer with id ${req.params.custId}`,
-            data: customer
-        })
+        if(customer){
+            res.json({
+                message: `The customer with id ${req.params.custId}`,
+                data: customer
+            })
+        }
+        else {
+            res.json({
+                message: `There is no customer with id ${req.params.custId}`,
+            })
+        }
     })
     .catch(err=>{
         res.status(404).json({
@@ -70,15 +77,31 @@ exports.updateACustomer=(req,res)=>{
 }
 
 exports.deleteACustomer=(req,res)=>{
-    customerModel.findByIdAndRemove(req.params.custId)
-    .then(()=>{
-        res.json({
-            message:`The customer with id ${req.params.custId} is deleted`
-        })
+    customerModel.findById(req.params.custId)
+    .then(customer=>{
+        if(customer){
+            customerModel.findByIdAndRemove(req.params.custId)
+            .then(()=>{
+                res.json({
+                    message:`The customer with id ${req.params.custId} is deleted`
+                })
+            })
+            .catch(err=>{
+                res.status(500).json({
+                    message: err
+                })
+            })
+        }
+        else {
+            res.json({
+                message: `There is no customer with id ${req.params.custId}`,
+            })
+        }
     })
     .catch(err=>{
-        res.status(500).json({
-            message: err
+        res.status(404).json({
+            message: `There is no customer with id ${req.params.custId}`
         })
     })
+    
 }
