@@ -15,6 +15,6 @@ router.get('/:custId', customerService.readACustomer);
 router.put('/:custId', customerService.updateACustomer);
 
 //delete
-router.put('/:custId', customerService.deleteACustomer);
+router.delete('/:custId', customerService.deleteACustomer);
 
 module.exports=router;

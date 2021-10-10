@@ -18,6 +18,6 @@ router.get('/:prodId', productsService.readAProduct);
 router.put('/:prodId', productsService.updateAProduct);
 
 //delete
-router.put('/:prodId', productsService.deleteAProduct);
+router.delete('/:prodId', productsService.deleteAProduct);
 
 module.exports=router;
