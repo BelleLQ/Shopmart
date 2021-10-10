@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const customersController = require('./controllers/CustomersController');
-const productsController = require('./controllers/ProductsController');
+const customersController = require('./controllers/CustomersController.js');
+const productsController = require('./controllers/ProductsController.js');
 
 if(process.env.NODE_ENV!="production")
 {
