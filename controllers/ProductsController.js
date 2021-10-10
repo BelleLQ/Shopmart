@@ -8,6 +8,9 @@ router.post('/', productsService.createAProduct);
 //read all
 router.get('/', productsService.readAllProducts);
 
+//read all categories
+router.get('/categories', productsService.readAllCategories);
+
 //read 1
 router.get('/:prodId', productsService.readAProduct);
 

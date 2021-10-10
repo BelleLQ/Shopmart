@@ -17,11 +17,84 @@ exports.createAProduct=(req,res)=>{
 }
 
 exports.readAllProducts=(req,res)=>{
-    productsModel.find()
+    if(req.query.category){
+        productsModel.find()
+        .where("category").equals(req.query.category)
     .then(products=>{
         res.json({
-            message: `A list of all products`,
-            data: products
+            message: `A list of products that belong to the category - ${req.query.category}`,
+            data: products,
+            totalProducts: products.length
+        })
+    })
+    .catch(err=>{
+        res.status(500).json({
+            message: err
+        })
+    })
+    }
+    else if(typeof(req.query.isBestSeller)!="undefined"){
+        productsModel.find()
+        .where("isBestSeller").equals(req.query.isBestSeller)
+    .then(products=>{
+        if(req.query.isBestSeller){
+            res.json({
+                message: `A list of products that are Best Sellers`,
+                data: products,
+                totalProducts: products.length
+            })
+        }
+        else{
+            res.json({
+                message: `A list of products that are not Best Sellers`,
+                data: products,
+                totalProducts: products.length
+            })
+        }
+    })
+    .catch(err=>{
+        res.status(500).json({
+            message: err
+        })
+    })
+    }
+    else{
+        productsModel.find()
+        .then(products=>{
+            res.json({
+                message: `A list of all products`,
+                data: products
+            })
+        })
+        .catch(err=>{
+            res.status(500).json({
+                message: err
+            })
+        })
+    }
+}
+
+exports.readAProduct=(req,res)=>{
+    productsModel.findById(req.params.prodId)
+    .then(product=>{
+        res.json({
+            message: `The product with id ${req.params.prodId}`,
+            data: product
+        })
+    })
+    .catch(err=>{
+        res.status(404).json({
+            message: `There is no product with id ${req.params.prodId}`
+        })
+    })
+}
+
+exports.readAllCategories=(req,res)=>{
+    productsModel.distinct('category')
+    .then(categories=>{
+        res.json({
+            message: `A list of all categories`,
+            data: categories
         })
     })
     .catch(err=>{
@@ -31,33 +104,18 @@ exports.readAllProducts=(req,res)=>{
     })
 }
 
-exports.readAProduct=(req,res)=>{
-    productsModel.findById(req.params.id)
-    .then(product=>{
-        res.json({
-            message: `The product with id ${req.params.id}`,
-            data: product
-        })
-    })
-    .catch(err=>{
-        res.status(404).json({
-            message: `There is no product with id ${req.params.id}`
-        })
-    })
-}
-
 exports.updateAProduct=(req,res)=>{
-    productsModel.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    productsModel.findByIdAndUpdate(req.params.prodId, req.body, {new: true})
     .then(product=>{
         if(product){
             res.json({
-                message: `product with id ${req.params.id} is updated`,
+                message: `product with id ${req.params.prodId} is updated`,
                 data: product
             })
         }
         else{
             res.status(404).json({
-                message:`There is no product with id ${req.params.id}`
+                message:`There is no product with id ${req.params.prodId}`
             })
         }
     })
@@ -69,10 +127,10 @@ exports.updateAProduct=(req,res)=>{
 }
 
 exports.deleteAProduct=(req,res)=>{
-    productsModel.findByIdAndRemove(req.params.id)
+    productsModel.findByIdAndRemove(req.params.prodId)
     .then(()=>{
         res.json({
-            message: `Product with id ${req.params.id} is deleted`
+            message: `Product with id ${req.params.prodId} is deleted`
         })
     })
     .catch(err=>{

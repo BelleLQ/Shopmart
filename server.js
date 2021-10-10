@@ -1,13 +1,18 @@
 const express = require('express');
-const app = express();
 const mongoose = require('mongoose');
-require('dotenv').config({path:'config/keys.env'});
 const customersController = require('./controllers/CustomersController');
 const productsController = require('./controllers/ProductsController');
 
+if(process.env.NODE_ENV!="production")
+{
+    require('dotenv').config({ path: 'config/keys.env' });
+}
+const app = express();
+
+app.use(express.json());
 
 app.use("/customers", customersController);
-app.use("/customers", productsController);
+app.use("/products", productsController);
 
 
 app.listen(process.env.PORT,()=>{

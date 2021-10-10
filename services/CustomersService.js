@@ -33,32 +33,32 @@ exports.readAllCustomers=(req,res)=>{
 }
 
 exports.readACustomer=(req,res)=>{
-    customerModel.findById(req.params.id)
+    customerModel.findById(req.params.custId)
     .then(customer=>{
         res.json({
-            message: `The customer with id ${req.params.id}`,
+            message: `The customer with id ${req.params.custId}`,
             data: customer
         })
     })
     .catch(err=>{
         res.status(404).json({
-            message: `There is no customer with id ${req.params.id}`
+            message: `There is no customer with id ${req.params.custId}`
         })
     })
 }
 
 exports.updateACustomer=(req,res)=>{
-    customerModel.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    customerModel.findByIdAndUpdate(req.params.custId, req.body, {new: true})
     .then(customer=>{
         if(customer){
             res.json({
-                message: `Customer with id ${req.params.id} is updated`,
+                message: `Customer with id ${req.params.custId} is updated`,
                 data: customer
             })
         }
         else{
             res.status(404).json({
-                message:`There is no customer with id ${req.params.id}`
+                message:`There is no customer with id ${req.params.custId}`
             })
         }
     })
@@ -70,10 +70,10 @@ exports.updateACustomer=(req,res)=>{
 }
 
 exports.deleteACustomer=(req,res)=>{
-    customerModel.findByIdAndRemove(req.params.id)
+    customerModel.findByIdAndRemove(req.params.custId)
     .then(()=>{
         res.json({
-            message:`The customer with id ${req.params.id} is deleted`
+            message:`The customer with id ${req.params.custId} is deleted`
         })
     })
     .catch(err=>{
