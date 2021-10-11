@@ -57,5 +57,36 @@ This end point deletes the customers with the provided id.
 ### GET /products
 
 This end point returns a list of all products.
+If you add a filter in the query string, the products with provided conditions will be returned.
 
 ### GET /products/categories
+
+This end point returns a list of all categories of products.
+
+### GET /customers/id
+
+This end point returns the product with the provided id.
+
+### POST /customers
+
+This end point creates a new product with the provided data. The data is required to submit in the body of the request as JSON. The required data is specified in the product model.
+
+### PUT /heroes/id
+
+This end point updates a new product with the provided data. The data is required to submit in the body of the request as JSON.
+
+### DELETE /heroes/id
+
+This end point deletes the product with the provided id.
+
+# Setting up application
+
+- Clone the source code: run "npm install"
+- Create a config folder
+- Create a file called keys.env within the config folder
+- In the keys.env, add two environment variables
+
+1. MONGODB_QUERY_STRING = your connection string
+2. PORT - 3000
+
+- Run the application: run "npm run dev"
