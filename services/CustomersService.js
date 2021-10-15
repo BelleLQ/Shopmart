@@ -1,4 +1,4 @@
-const customerModel = require('../models/customersModel.js');
+const customerModel = require('../models/CustomersModel');
 
 exports.createACustomer=(req,res)=>{
     const customer = new customerModel(req.body);
