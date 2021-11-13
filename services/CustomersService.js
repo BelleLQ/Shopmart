@@ -1,19 +1,28 @@
 const customerModel = require('../models/CustomersModel');
 
 exports.createACustomer=(req,res)=>{
-    const customer = new customerModel(req.body);
-    customer.save()
-    .then(newCustomer=>{
+    if(req.body.firstName && req.body.lastName && req.body.email && req.body.password ) {
+        console.log(req.body.firstName.length);
+    
+        const customer = new customerModel(req.body);
+        customer.save()
+        .then(newCustomer=>{
+            res.json({
+                message:"The customer is created",
+                data: newCustomer
+            })
+        })
+        .catch(err=>{
+            res.status(500).json({
+                message: err
+            })
+        })
+    }
+    else {
         res.json({
-            message:"The customer is created",
-            data: newCustomer
+            message:"Some fields are missing"
         })
-    })
-    .catch(err=>{
-        res.status(500).json({
-            message: err
-        })
-    })
+    }
 }
 
 exports.readAllCustomers=(req,res)=>{
@@ -55,25 +64,38 @@ exports.readACustomer=(req,res)=>{
 }
 
 exports.updateACustomer=(req,res)=>{
-    customerModel.findByIdAndUpdate(req.params.custId, req.body, {new: true})
-    .then(customer=>{
-        if(customer){
-            res.json({
-                message: `Customer with id ${req.params.custId} is updated`,
-                data: customer
-            })
-        }
-        else{
-            res.status(404).json({
-                message:`There is no customer with id ${req.params.custId}`
-            })
-        }
-    })
-    .catch(err=>{
-        res.status(500).json({
-            message: err
+    let isValid = true;
+    if(typeof(req.body.firstName) !== "undefined" && req.body.firstName.length==0) isValid=false;
+    else if(typeof(req.body.lastName) !== "undefined" && req.body.lastName.length==0) isValid=false;
+    else if(typeof(req.body.email) !== "undefined" && req.body.email.length==0) isValid=false;
+    else if(typeof(req.body.password) !== "undefined" && req.body.email.password==0) isValid=false;
+
+    if(isValid){
+        customerModel.findByIdAndUpdate(req.params.custId, req.body, {new: true})
+        .then(customer=>{
+            if(customer){
+                res.json({
+                    message: `Customer with id ${req.params.custId} is updated`,
+                    data: customer
+                })
+            }
+            else{
+                res.status(404).json({
+                    message:`There is no customer with id ${req.params.custId}`
+                })
+            }
         })
-    })
+        .catch(err=>{
+            res.status(500).json({
+                message: err
+            })
+        })
+    }
+    else {
+        res.json({
+            message:"Some fields are missing"
+        })
+    }  
 }
 
 exports.deleteACustomer=(req,res)=>{

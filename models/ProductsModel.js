@@ -13,7 +13,11 @@ const productSchema = new Schema({
         type : String,
     },
     category:{
-        type : String,
+        type : {
+            categoryName: {type:String},
+            photoUrl: {type:String},
+            categoryDesc: {type:String}
+        },
         required : true
     },
     quantity:{
@@ -23,9 +27,9 @@ const productSchema = new Schema({
         type : Boolean,
         required : true
     },
-    photoUrl:{
+    photoUrl:[{
         type: String
-    }
+    }]
     
 })
 const productModel = mongoose.model('Product', productSchema);

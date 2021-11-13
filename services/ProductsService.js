@@ -1,19 +1,26 @@
 const productsModel = require('../models/ProductsModel.js');
 
 exports.createAProduct=(req,res)=>{
-    const product = new productsModel(req.body);
-    product.save()
-    .then(newProduct=>{
+    if(req.body.prodName && req.body.price && req.body.category && typeof(req.body.isBestSeller) !== "undefined" && req.body.isBestSeller !==""){
+        const product = new productsModel(req.body);
+        product.save()
+        .then(newProduct=>{
+            res.json({
+                message: `A new product is created`,
+                data: newProduct
+            })
+        })
+        .catch(err=>{
+            res.status(500).json({
+                message:err
+            })
+        })
+    }
+    else {
         res.json({
-            message: `A new product is created`,
-            data: newProduct
+            message:"Some fields are missing or empty"
         })
-    })
-    .catch(err=>{
-        res.status(500).json({
-            message:err
-        })
-    })
+    }
 }
 
 exports.readAllProducts=(req,res)=>{
@@ -123,50 +130,103 @@ exports.readAProduct=(req,res)=>{
     })
 }
 
+// exports.readAllCategories=(req,res)=>{
+//     productsModel.distinct('category.categoryName')
+//     .then(categories=>{
+//         if(categories){
+//             res.json({
+//                 message: `A list of all categories`,
+//                 data: categories,
+//                 totalCategories: categories.length
+//             })
+//         }
+//         else{
+//             res.json({
+//                 message: `There is no categories`,
+//                 totalCategories: categories.length
+//             })
+//         }
+//     })
+//     .catch(err=>{
+//         res.status(500).json({
+//             message: err
+//         })
+//     })
+// }
 exports.readAllCategories=(req,res)=>{
-    productsModel.distinct('category')
+    let categoriesSetObj = [];
+    productsModel.distinct('category.categoryName')
     .then(categories=>{
-        if(categories){
-            res.json({
-                message: `A list of all categories`,
-                data: categories,
-                totalCategories: categories.length
+        const promises=categories.map((catName)=>(
+            productsModel.findOne({"category.categoryName":catName})
+            .then(productsObj=>{
+                categoriesSetObj.push(productsObj.category);
             })
-        }
-        else{
-            res.json({
-                message: `There is no categories`,
-                totalCategories: categories.length
+            .catch(err=>{
+                res.status(500).json({
+                    message: err
+                })
             })
-        }
-    })
-    .catch(err=>{
-        res.status(500).json({
-            message: err
+            
+        ))
+        Promise.all(promises)
+        .then(()=>{
+               if(categoriesSetObj.length>0){
+                    res.json({
+                        message: `A list of all categories`,
+                        data: categoriesSetObj,
+                        totalCategories: categoriesSetObj.length
+                    })
+                }
+                else{
+                    res.json({
+                        message: `There is no categories`,
+                        totalCategories: categoriesSetObj.length
+                    })
+                }
+            })
+        .catch(err=>{
+            res.status(500).json({
+                message: err
+            })
         })
-    })
+})
 }
 
+
 exports.updateAProduct=(req,res)=>{
-    productsModel.findByIdAndUpdate(req.params.prodId, req.body, {new: true})
-    .then(product=>{
-        if(product){
-            res.json({
-                message: `product with id ${req.params.prodId} is updated`,
-                data: product
-            })
-        }
-        else{
-            res.status(404).json({
-                message:`There is no product with id ${req.params.prodId}`
-            })
-        }
-    })
-    .catch(err=>{
-        res.status(500).json({
-            message: err
+    let isValid = true;
+    if(typeof(req.body.prodName) !== "undefined" && req.body.prodName.length==0) isValid=false;
+    else if(typeof(req.body.price) !== "undefined" && req.body.price.length==0) isValid=false;
+    else if(typeof(req.body.category) !== "undefined" && req.body.category.length==0) isValid=false;
+    else if(typeof(req.body.isBestSeller) !== "undefined" && req.body.isBestSeller.length==0) isValid=false;
+
+    if(isValid){
+        productsModel.findByIdAndUpdate(req.params.prodId, req.body, {new: true})
+        .then(product=>{
+            if(product){
+                res.json({
+                    message: `product with id ${req.params.prodId} is updated`,
+                    data: product
+                })
+            }
+            else{
+                res.status(404).json({
+                    message:`There is no product with id ${req.params.prodId}`
+                })
+            }
         })
-    })
+        .catch(err=>{
+            res.status(500).json({
+                message: err
+            })
+        })
+    }
+    else {
+        res.json({
+            message:"Fields cannot be empty"
+        })
+    }
 }
 
 exports.deleteAProduct=(req,res)=>{
