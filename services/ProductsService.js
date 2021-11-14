@@ -26,7 +26,7 @@ exports.createAProduct=(req,res)=>{
 exports.readAllProducts=(req,res)=>{
     if(req.query.category){
         productsModel.find()
-        .where("category").equals(req.query.category)
+        .where("category.categoryName").equals(req.query.category)
     .then(products=>{
         if(products){
             res.json({

@@ -1,8 +1,8 @@
 const customerModel = require('../models/CustomersModel');
 
 exports.createACustomer=(req,res)=>{
+    console.log(req.body);
     if(req.body.firstName && req.body.lastName && req.body.email && req.body.password ) {
-        console.log(req.body.firstName.length);
     
         const customer = new customerModel(req.body);
         customer.save()
@@ -14,7 +14,7 @@ exports.createACustomer=(req,res)=>{
         })
         .catch(err=>{
             res.status(500).json({
-                message: err
+                message: `Error: ${err}`
             })
         })
     }
