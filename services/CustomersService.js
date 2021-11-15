@@ -1,23 +1,34 @@
 const customerModel = require('../models/CustomersModel');
 
 exports.createACustomer=(req,res)=>{
-    console.log(req.body);
     if(req.body.firstName && req.body.lastName && req.body.email && req.body.password ) {
-    
-        const customer = new customerModel(req.body);
-        customer.save()
-        .then(newCustomer=>{
-            res.json({
-                message:"The customer is created",
-                data: newCustomer
-            })
-        })
-        .catch(err=>{
-            res.status(500).json({
-                message: `Error: ${err}`
-            })
-        })
-    }
+        customerModel.findOne()
+        .where("email").equals(req.body.email)
+        .then(repeatedCustomers=>{
+            console.log(repeatedCustomers);
+                if(!repeatedCustomers){
+                    const customer = new customerModel(req.body);
+                    customer.save()
+                        .then(newCustomer=>{
+                            res.json({
+                                message:"The customer is created",
+                                data: newCustomer
+                            })
+                        })
+                        .catch(err=>{
+                            res.status(500).json({
+                                message: `Error: ${err}`
+                            })
+                        })
+                }
+                else {
+                    res.json({
+                        message:"Failed. The email has been registered"
+                    })
+                }
+
+                })
+            }
     else {
         res.json({
             message:"Some fields are missing"
@@ -58,17 +69,17 @@ exports.readACustomer=(req,res)=>{
     })
     .catch(err=>{
         res.status(404).json({
-            message: `There is no customer with id ${req.params.custId}`
+            message: `${err}`
         })
     })
 }
 
 exports.updateACustomer=(req,res)=>{
     let isValid = true;
-    if(typeof(req.body.firstName) !== "undefined" && req.body.firstName.length==0) isValid=false;
-    else if(typeof(req.body.lastName) !== "undefined" && req.body.lastName.length==0) isValid=false;
-    else if(typeof(req.body.email) !== "undefined" && req.body.email.length==0) isValid=false;
-    else if(typeof(req.body.password) !== "undefined" && req.body.email.password==0) isValid=false;
+    if(typeof(req.body.firstName) !== "undefined" && req.body.firstName.length===0) isValid=false;
+    else if(typeof(req.body.lastName) !== "undefined" && req.body.lastName.length===0) isValid=false;
+    else if(typeof(req.body.email) !== "undefined" && req.body.email.length===0) isValid=false;
+    else if(typeof(req.body.password) !== "undefined" && req.body.email.password===0) isValid=false;
 
     if(isValid){
         customerModel.findByIdAndUpdate(req.params.custId, req.body, {new: true})
@@ -122,7 +133,7 @@ exports.deleteACustomer=(req,res)=>{
     })
     .catch(err=>{
         res.status(404).json({
-            message: `There is no customer with id ${req.params.custId}`
+            message: `${err}`
         })
     })
     
