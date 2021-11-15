@@ -1,18 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
-var cors = require('cors');
+const cors = require('cors');
 const customersController = require('./controllers/CustomersController.js');
 const productsController = require('./controllers/ProductsController.js');
 const herosController = require('./controllers/HerosController');
-var whitelist = ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://flamboyant-morse-789f6d.netlify.app']
+const whitelist = ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://flamboyant-morse-789f6d.netlify.app']
 
 if(process.env.NODE_ENV!="production")
 {
     require('dotenv').config({ path: 'config/keys.env' });
 }
 
-var corsOptionsDelegate = function (req, callback) {
-    var corsOptions;
+const corsOptionsDelegate = function (req, callback) {
+    let corsOptions;
     if (whitelist.indexOf(req.header('Origin')) !== -1) {
       corsOptions = { origin: true } // reflect (enable) the requested origin in the CORS response
     } else {
