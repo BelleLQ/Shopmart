@@ -27,6 +27,7 @@ exports.readAllProducts=(req,res)=>{
     if(req.query.category){
         productsModel.find()
         .where("category.categoryName").equals(req.query.category)
+        .sort({'prodName':1})
     .then(products=>{
         if(products){
             res.json({
@@ -51,6 +52,7 @@ exports.readAllProducts=(req,res)=>{
     else if(typeof(req.query.isBestSeller)!="undefined"){
         productsModel.find()
         .where("isBestSeller").equals(req.query.isBestSeller)
+        .sort({'prodName':1})
     .then(products=>{
         if(req.query.isBestSeller){           
             if(products){
@@ -91,7 +93,8 @@ exports.readAllProducts=(req,res)=>{
     }
     else{
         productsModel.find()
-        .then(products=>{
+            .sort({'prodName':1})
+            .then(products=>{
             if(products){
                 res.json({
                     message: `A list of all products`,
@@ -123,7 +126,7 @@ exports.readAProduct=(req,res)=>{
             data: product
         })
     })
-    .catch(err=>{
+    .catch(()=>{
         res.status(404).json({
             message: `There is no product with id ${req.params.prodId}`
         })
@@ -167,11 +170,11 @@ exports.readAllCategories=(req,res)=>{
                     message: err
                 })
             })
-            
         ))
         Promise.all(promises)
         .then(()=>{
                if(categoriesSetObj.length>0){
+                   categoriesSetObj.sort();
                     res.json({
                         message: `A list of all categories`,
                         data: categoriesSetObj,
@@ -196,10 +199,10 @@ exports.readAllCategories=(req,res)=>{
 
 exports.updateAProduct=(req,res)=>{
     let isValid = true;
-    if(typeof(req.body.prodName) !== "undefined" && req.body.prodName.length==0) isValid=false;
-    else if(typeof(req.body.price) !== "undefined" && req.body.price.length==0) isValid=false;
-    else if(typeof(req.body.category) !== "undefined" && req.body.category.length==0) isValid=false;
-    else if(typeof(req.body.isBestSeller) !== "undefined" && req.body.isBestSeller.length==0) isValid=false;
+    if(typeof(req.body.prodName) !== "undefined" && req.body.prodName.length===0) isValid=false;
+    else if(typeof(req.body.price) !== "undefined" && req.body.price.length===0) isValid=false;
+    else if(typeof(req.body.category) !== "undefined" && req.body.category.length===0) isValid=false;
+    else if(typeof(req.body.isBestSeller) !== "undefined" && req.body.isBestSeller.length===0) isValid=false;
 
     if(isValid){
         productsModel.findByIdAndUpdate(req.params.prodId, req.body, {new: true})
@@ -251,7 +254,7 @@ exports.deleteAProduct=(req,res)=>{
             })
         }
     })
-    .catch(err=>{
+    .catch(()=>{
         res.status(404).json({
             message: `There is no product with id ${req.params.prodId}`
         })

@@ -4,6 +4,7 @@ exports.createACustomer=(req,res)=>{
     if(req.body.firstName && req.body.lastName && req.body.email && req.body.password ) {
         customerModel.findOne()
         .where("email").equals(req.body.email)
+        .sort({'firstName':1})
         .then(repeatedCustomers=>{
             console.log(repeatedCustomers);
                 if(!repeatedCustomers){
@@ -38,7 +39,8 @@ exports.createACustomer=(req,res)=>{
 
 exports.readAllCustomers=(req,res)=>{
     customerModel.find()
-    .then(customers=>{
+        .sort({'firstName':1})
+        .then(customers=>{
         res.json({
             message: 'A list of all customers',
             data: customers,
@@ -54,7 +56,7 @@ exports.readAllCustomers=(req,res)=>{
 
 exports.readACustomer=(req,res)=>{
     customerModel.findById(req.params.custId)
-    .then(customer=>{
+        .then(customer=>{
         if(customer){
             res.json({
                 message: `The customer with id ${req.params.custId}`,

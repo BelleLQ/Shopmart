@@ -35,7 +35,8 @@ exports.readAllHeros=(req,res)=>{
         'startDate':{$lte:todayDate},
         "endDate":{$gte: todayDate}
         })
-    .then(heros=>{
+        .sort({'startDate':1})
+        .then(heros=>{
         if(heros.length){
             res.json({
                 message: `A list of all hero items that are now on sale`,
@@ -61,7 +62,8 @@ exports.readAllHeros=(req,res)=>{
 
 exports.readHerosHistory=(req,res)=>{
     herosModel.find()
-    .then(heros=>{
+        .sort({'startDate':1})
+        .then(heros=>{
         if(heros){
             res.json({
                 message: `A list of all hero items in hero history`,
@@ -93,7 +95,7 @@ exports.readAHero=(req,res)=>{
             data: hero
         })
     })
-    .catch(err=>{
+    .catch(()=>{
         res.status(404).json({
             message: `There is no hero with id ${req.params.heroId}`
         })
@@ -102,10 +104,10 @@ exports.readAHero=(req,res)=>{
 
 exports.updateAHero=(req,res)=>{
     let isValid = true;
-    if(typeof(req.body.heroName) !== "undefined" && req.body.heroName.length==0) isValid=false;
-    else if(typeof(req.body.photoUrl) !== "undefined" && req.body.photoUrl.length==0) isValid=false;
-    else if(typeof(req.body.startDate) !== "undefined" && req.body.startDate.length==0) isValid=false;
-    else if(typeof(req.body.endDate) !== "undefined" && req.body.endDate.length==0) isValid=false;
+    if(typeof(req.body.heroName) !== "undefined" && req.body.heroName.length===0) isValid=false;
+    else if(typeof(req.body.photoUrl) !== "undefined" && req.body.photoUrl.length===0) isValid=false;
+    else if(typeof(req.body.startDate) !== "undefined" && req.body.startDate.length===0) isValid=false;
+    else if(typeof(req.body.endDate) !== "undefined" && req.body.endDate.length===0) isValid=false;
 
     if(isValid){
         herosModel.findByIdAndUpdate(req.params.heroId, req.body, {new: true})
@@ -159,7 +161,7 @@ exports.deleteAHero=(req,res)=>{
             })
         }
     })
-    .catch(err=>{
+    .catch(()=>{
         res.status(404).json({
             message: `There is no hero with id ${req.params.heroId}`
         })
