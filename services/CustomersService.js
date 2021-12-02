@@ -6,7 +6,6 @@ exports.createACustomer=(req,res)=>{
         .where("email").equals(req.body.email)
         .sort({'firstName':1})
         .then(repeatedCustomers=>{
-            console.log(repeatedCustomers);
                 if(!repeatedCustomers){
                     const customer = new customerModel(req.body);
                     customer.save()
