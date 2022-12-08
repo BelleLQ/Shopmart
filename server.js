@@ -4,7 +4,7 @@ const cors = require('cors');
 const customersController = require('./controllers/CustomersController.js');
 const productsController = require('./controllers/ProductsController.js');
 const herosController = require('./controllers/HerosController');
-const whitelist = ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://shopmart.bellelqweb.com']
+const whitelist = ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://shopmart.bellelq.com']
 
 if(process.env.NODE_ENV!="production")
 {
