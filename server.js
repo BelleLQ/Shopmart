@@ -25,6 +25,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cors(corsOptionsDelegate));
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
 app.use("/customers", customersController);
 app.use("/products", productsController);
 app.use("/heros", herosController);
