@@ -4,7 +4,7 @@ const cors = require('cors');
 const customersController = require('./controllers/CustomersController.js');
 const productsController = require('./controllers/ProductsController.js');
 const herosController = require('./controllers/HerosController');
-const whitelist = ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://shopmart.bellelq.com']
+const whitelist = ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://shopmart.bellelq.com','https://shopmart.bellelqweb.com']
 
 if(process.env.NODE_ENV!="production")
 {
@@ -25,10 +25,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors(corsOptionsDelegate));
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    next();
-});
+
 app.use("/customers", customersController);
 app.use("/products", productsController);
 app.use("/heros", herosController);
